@@ -1,0 +1,72 @@
+This is a more-or-less direct translation of TweetNaCl, a version of
+the nacl.cr.yp.to library that was published in 100 tweets on Twitter
+in July 2013 by the NaCl main author, Daniel J. Bernstein.  I watched
+his talk "The year in crypto" at the 30th Chaos Communication Congress
+in Hamburg, together with some fellow Lispers, and we half-jokingly
+agreed that this needed to be translated to a more useful language.
+;-)
+
+Note that this is not just a wrapper, but a complete reimplementation.
+I know that a wrapper is likely to be more useful, but I am doing this
+rather as a comparative linguistics experiment.
+
+TweetNaCl is written in C, and condensed in almost code golf style to
+make it fit the 100 tweets.  The C original is included in comments in
+the naclcl.lisp file (formatted to my own, not so fashionable tastes).
+
+The translation is to Common Lisp.  Current status: first pass, trying
+to get the bit fiddling translated one-to-one.  This was mostly an
+exercise in Common Lisp's bit manipulation features.  The code
+compiles, but is otherwise untested.  Current goal: Correct remaining
+mistakes, and a deeper understanding should lead to clearer Common
+Lisp code.
+
+Some first impressions:
+
+- Common Lisp is just as useful for bit fiddling as
+  C, with its elaborate set of bit manipulation functions.
+
+- C-style "return parameters", prevalent in the original, can be
+  replaced by multiple-value semantics (although I currently have not
+  yet refactored in this direction).
+
+- C-style return of status codes can be replaced by conditions or
+  additional return values.  The original uses them frequently, and it
+  is often not clear what meaning -1 or 0 are supposed to convey.
+
+- The original often has pointers as parameters, which makes it
+  unclear how big the underlying arrays/streams are supposed to be.
+  Replacing these by Lisp vectors is useful to make these assumptions
+  more explicit, and it also adds bounds checking.  I am quite sure
+  that I have made mistakes when extracting the intent from the C
+  code.
+
+Roadmap:
+
+- Add unit tests, understand each function for itself, add
+  documentation to each, improve translation
+
+- Add integration tests, understand the exported functions, separate
+  into more files, add general documentation
+
+- Understand the features outlined at
+  http://nacl.cr.yp.to/features.html and try to support them as well
+
+- Refactor!  Fun!  I especially want to get better parameter and
+  return value handling and convert the stream operations to real
+  stream handling.
+
+- Optimize!  More fun!  Avoid consing, but keep an eye on constant
+  running time to prevent side channel attacks (this should also be
+  automatically tested).
+
+- Compare the final result with both TweetNaCl and NaCl from
+  nacl.cr.yp.to, by speed, clarity of code, and clarity of the API
+  that a library user gets to see.  Also include the C++ and Python
+  wrapper APIs in this survey.
+
+- Perhaps I will decide along the way to start afresh, this time based
+  on the exported functions of the NaCl library from nacl.cr.yp.to and
+  building from there.
+
+- Brag a lot

@@ -1,0 +1,2 @@
+(defpackage #:naclcl
+  (:use #:cl))
