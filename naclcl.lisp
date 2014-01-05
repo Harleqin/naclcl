@@ -21,7 +21,7 @@
 (deftype -i64- () 'integer)
 
 (defun make-gf ()
-  (make-array 16 :element-type '-i64-))
+  (make-array 16 :element-type '-i64- :initial-element 0))
 
 (defun make-gf-1 ()
   (let ((gf (make-gf)))
@@ -314,7 +314,9 @@ zurück, wenn die Arrays gleich sind, sonst -1."
 (defun crypto-stream-salsa-20-xor (c m b n k
                                    &aux
                                      (x (make-array 64 :element-type '-u8-))
-                                     (z (make-array 16 :element-type '-u8-)))
+                                     (z (make-array 16
+                                                    :element-type '-u8-
+                                                    :initial-element 0)))
   (unless (zerop b)
     (setf (subseq z 0 8) (subseq n 0 8))
     (loop
@@ -437,16 +439,17 @@ zurück, wenn die Arrays gleich sind, sonst -1."
 ;   return 0; }
 
 (defun crypto-onetimeauth (out m n k)
-  (let ((r (copy-seq (subseq k 0 17)))
-        (h (make-array 17 :element-type '-u32-)))
+  (let ((r (make-array 17 :element-type '-u32- :initial-element 0))
+        (h (make-array 17 :element-type '-u32- :initial-element 0)))
+    (setf (subseq r 0 16) (subseq k 0 16))
     (dolist (index '(3 7 11 15))
       (setf (aref r index) (logand (aref r index) 15)))
     (dolist (index '(4 8 12))
       (setf (aref r index) (logand (aref r index) 252)))
     (loop :while (plusp n)
-      :for c := (make-array 17 :element-type '-u32-)
+      :for c := (make-array 17 :element-type '-u32- :initial-element 0)
       :for length := (min 16 n)
-      :for x := (make-array 17 :element-type '-u32-)
+      :for x := (make-array 17 :element-type '-u32- :initial-element 0)
       :for u := 0
       :do (setf (subseq c 0 length) (subseq m 0 length)
                 (aref c length) 1
@@ -661,7 +664,8 @@ zurück, wenn die Arrays gleich sind, sonst -1."
   (dotimes (i 16 o)
     (setf (aref o i) (+ (aref n (* 2 i))
                         (ash (aref n (1+ (* 2 i))) 8))))
-  (setf (aref o 15) (mask-field (byte 15 0) (aref o 15))))
+  (setf (aref o 15) (mask-field (byte 15 0) (aref o 15)))
+  o)
 
 ; sv A (gf o, const gf a, const gf b)
 ; { int i;
@@ -688,7 +692,7 @@ zurück, wenn die Arrays gleich sind, sonst -1."
 ;   car25519 (o); }
 
 (defun m (o a b)
-  (let ((tmp (make-array 31 :element-type '-i64-)))
+  (let ((tmp (make-array 31 :element-type '-i64- :initial-element 0)))
     (dotimes (i 16)
       (dotimes (j 16)
         (incf (aref tmp (+ i j)) (* (aref a i) (aref b i)))))
@@ -1121,7 +1125,7 @@ zurück, wenn die Arrays gleich sind, sonst -1."
 (defun crypto-hash (out m n
                     &aux
                       (h (copy-seq *iv*))
-                      (x (make-array 256 :element-type '-u8-))
+                      (x (make-array 256 :element-type '-u8- :initial-element 0))
                       (b n))
   (crypto-hashblocks h m n)
   (setf n (mask-field (byte 7 0) n)
@@ -1388,7 +1392,9 @@ zurück, wenn die Arrays gleich sind, sonst -1."
                       (d (make-array 64 :element-type '-u8-))
                       (h (make-array 64 :element-type '-u8-))
                       (r (make-array 64 :element-type '-u8-))
-                      (x (make-array 64 :element-type '-i64-))
+                      (x (make-array 64
+                                     :element-type '-i64-
+                                     :initial-element 0))
                       (p (make-array 4
                                      :initial-contents (loop :repeat 4
                                                          :collect (make-gf)))))
