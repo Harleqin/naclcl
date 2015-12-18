@@ -1,3 +1,14 @@
+* Status
+
+This experiment is currently abandoned.  If you want to use NaCl from Common
+Lisp, there are bindings for libsodium at
+https://github.com/Harleqin/foreign-sodium.
+
+I might return to native implementation later, but that may or may not be based
+on the code in this repository.
+
+* Overview
+
 This is a more-or-less direct translation of TweetNaCl, a version of
 the nacl.cr.yp.to library that was published in 100 tweets on Twitter
 in July 2013 by the NaCl main author, Daniel J. Bernstein.  I watched
@@ -21,7 +32,7 @@ compiles, but is otherwise untested.  Current goal: Correct remaining
 mistakes, and a deeper understanding should lead to clearer Common
 Lisp code.
 
-Some first impressions:
+* Some first impressions
 
 - Common Lisp is just as useful for bit fiddling as
   C, with its elaborate set of bit manipulation functions.
@@ -41,7 +52,7 @@ Some first impressions:
   that I have made mistakes when extracting the intent from the C
   code.
 
-Roadmap:
+* Roadmap
 
 - Add unit tests, understand each function for itself, add
   documentation to each, improve translation
